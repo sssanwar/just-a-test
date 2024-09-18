@@ -51,9 +51,14 @@ export const getCurrentUser = async () => {
       Query.equal('accountId', currentAccount.$id),
     ])
 
-    if (!currentUser) throw Error
+    if (!currentUser) throw new Error('User not found')
     return currentUser.documents[0]
   } catch (error) {
     console.log(error)
   }
+}
+
+export const getAllPosts = async () => {
+  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId)
+  return posts.documents
 }
