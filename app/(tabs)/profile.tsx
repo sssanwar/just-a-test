@@ -23,7 +23,7 @@ const Profile = () => {
   }
 
   return (
-    <SafeAreaView className="bg-primary h-fulls">
+    <SafeAreaView className="bg-primary h-full">
       <View className="">
         <FlatList
           data={posts}

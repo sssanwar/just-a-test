@@ -6,13 +6,10 @@ import { router, usePathname } from 'expo-router'
 type Props = {
   initialValue?: string
   value: string
-  otherStyles: string
   placeholder?: string
-  keyboardType?: string
-  handleChangeText: (text: string) => void
 }
 
-const SearchInput = ({ value, initialValue, placeholder, handleChangeText, otherStyles, ...props }: Props) => {
+const SearchInput = ({ value, initialValue, placeholder }: Props) => {
   const pathname = usePathname()
   const [query, setQuery] = useState(initialValue ?? '')
 

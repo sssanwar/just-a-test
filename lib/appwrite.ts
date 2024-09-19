@@ -1,4 +1,4 @@
-import { Client, Account, ID, Avatars, Databases, Query } from 'react-native-appwrite'
+import { Client, Account, ID, Avatars, Databases, Query, Storage, ImageGravity } from 'react-native-appwrite'
 
 const config = {
   endpoint: 'https://cloud.appwrite.io/v1',
@@ -19,6 +19,7 @@ export const client = new Client()
 const account = new Account(client)
 const avatars = new Avatars(client)
 const databases = new Databases(client)
+const storage = new Storage(client)
 
 export const createUser = async (email: string, password: string, username: string) => {
   try {
@@ -58,7 +59,9 @@ export const getCurrentUser = async () => {
 }
 
 export const getAllPosts = async () => {
-  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId)
+  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId, [
+    Query.orderDesc('$createdAt'),
+  ])
   return posts.documents
 }
 
@@ -88,4 +91,46 @@ export const getUserPosts = async (userId?: string) => {
 export const signOut = async () => {
   const session = await account.deleteSession('current')
   return session
+}
+
+export type FileData = {
+  name: string
+  type: string
+  size: number
+  uri: string
+}
+
+export type CreateForm = {
+  title: string
+  prompt: string
+  video?: FileData
+  thumbnail?: FileData
+}
+
+export type MediaType = 'image' | 'video'
+
+export const getFilePreview = (id: string, mediaType: MediaType) => {
+  return mediaType === 'video'
+    ? storage.getFileView(config.storageId, id)
+    : storage.getFilePreview(config.storageId, id, 2000, 2000, ImageGravity.Top, 100)
+}
+
+export const uploadFile = async (fileData: FileData, mediaType: MediaType) => {
+  const uploaded = await storage.createFile(config.storageId, ID.unique(), fileData)
+  return getFilePreview(uploaded.$id, mediaType)
+}
+
+export const createVideo = async (userId: string, form: Required<CreateForm>) => {
+  const [thumbnailUrl, videoUrl] = await Promise.all([
+    uploadFile(form.thumbnail, 'image'),
+    uploadFile(form.video, 'video'),
+  ])
+
+  return await databases.createDocument(config.databaseId, config.videoCollectionId, ID.unique(), {
+    title: form.title,
+    thumbnail: thumbnailUrl,
+    video: videoUrl,
+    prompt: form.prompt,
+    creator: userId,
+  })
 }
