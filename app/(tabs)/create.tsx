@@ -10,6 +10,7 @@ import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker'
 import { router } from 'expo-router'
 import { CreateForm, createVideo, MediaType } from '@/lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
+import { onFullscreenUpdate } from '@/components/utils'
 
 const initialFormData: CreateForm = { title: '', prompt: '' }
 
@@ -74,6 +75,7 @@ const Create = () => {
                 source={{ uri: form.video.uri }}
                 className="w-full h-64 rounded-2xl"
                 resizeMode={ResizeMode.COVER}
+                onFullscreenUpdate={onFullscreenUpdate}
               />
             ) : (
               <View className="w-full h-40 px-4 bg-black-100 rounded-xl justify-center items-center">

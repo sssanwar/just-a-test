@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Models } from 'react-native-appwrite'
 import { icons } from '@/constants'
 import { ResizeMode, Video } from 'expo-av'
+import { onFullscreenUpdate } from './utils'
 
 type Props = {
   video: Models.Document
@@ -47,6 +48,7 @@ const VideoCard = ({
           shouldPlay
           onPlaybackStatusUpdate={status => status.isLoaded && status.didJustFinish && setPlaying(false)}
           rotation={1}
+          onFullscreenUpdate={onFullscreenUpdate}
         />
       ) : (
         <TouchableOpacity

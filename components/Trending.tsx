@@ -4,6 +4,7 @@ import { Models } from 'react-native-appwrite'
 import * as Animatable from 'react-native-animatable'
 import { icons } from '@/constants'
 import { Video, ResizeMode } from 'expo-av'
+import { onFullscreenUpdate } from './utils'
 
 type TrendingItemProps = {
   activeItem: Models.Document
@@ -34,6 +35,7 @@ const TrendingItem = ({ activeItem, item }: TrendingItemProps) => {
           useNativeControls
           shouldPlay
           onPlaybackStatusUpdate={status => status.isLoaded && status.didJustFinish && setPlaying(false)}
+          onFullscreenUpdate={onFullscreenUpdate}
         />
       ) : (
         <TouchableOpacity
