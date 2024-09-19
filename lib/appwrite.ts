@@ -1,4 +1,3 @@
-import SignIn from '@/app/(auth)/sign-in'
 import { Client, Account, ID, Avatars, Databases, Query } from 'react-native-appwrite'
 
 const config = {
@@ -60,5 +59,20 @@ export const getCurrentUser = async () => {
 
 export const getAllPosts = async () => {
   const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId)
+  return posts.documents
+}
+
+export const getLatestPosts = async () => {
+  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId, [
+    Query.orderDesc('$createdAt'),
+    Query.limit(7),
+  ])
+  return posts.documents
+}
+
+export const searchPosts = async (query: string) => {
+  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId, [
+    Query.search('title', query),
+  ])
   return posts.documents
 }
