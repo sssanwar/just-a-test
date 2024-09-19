@@ -76,3 +76,16 @@ export const searchPosts = async (query: string) => {
   ])
   return posts.documents
 }
+
+export const getUserPosts = async (userId?: string) => {
+  if (!userId) return []
+  const posts = await databases.listDocuments(config.databaseId, config.videoCollectionId, [
+    Query.equal('creator', userId),
+  ])
+  return posts.documents
+}
+
+export const signOut = async () => {
+  const session = await account.deleteSession('current')
+  return session
+}

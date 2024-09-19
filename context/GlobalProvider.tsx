@@ -3,15 +3,18 @@ import { getCurrentUser } from '@/lib/appwrite'
 import { Models } from 'react-native-appwrite'
 
 type AppContext = {
+  user?: Models.Document
+  isLoading: boolean
   isLoggedIn: boolean
   setIsLoggedIn: (val: boolean) => void
-  isLoading: boolean
+  setUser: (user?: Models.Document) => void
   setIsLoading: (val: boolean) => void
 }
 
 const GlobalContext = createContext<AppContext>({
   isLoggedIn: false,
   isLoading: false,
+  setUser: () => {},
   setIsLoading: () => {},
   setIsLoggedIn: () => {},
 })
@@ -27,7 +30,7 @@ const GlobalProvider = (props: PropsWithChildren) => {
     getCurrentUser()
       .then(user => {
         setIsLoggedIn(user ? true : false)
-        setUser(user ? user : undefined)
+        setUser(user)
       })
       .catch(err => console.log(err))
       .finally(() => setIsLoading(false))
@@ -36,8 +39,10 @@ const GlobalProvider = (props: PropsWithChildren) => {
   return (
     <GlobalContext.Provider
       value={{
+        user,
         isLoggedIn,
         isLoading,
+        setUser,
         setIsLoading,
         setIsLoggedIn,
       }}

@@ -46,6 +46,7 @@ const VideoCard = ({
           useNativeControls
           shouldPlay
           onPlaybackStatusUpdate={status => status.isLoaded && status.didJustFinish && setPlaying(false)}
+          rotation={1}
         />
       ) : (
         <TouchableOpacity
